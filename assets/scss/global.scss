@@ -1,0 +1,31 @@
+@import 'variables.scss';
+@import 'fonts.scss';
+@import 'titles.scss';
+@import 'element-ui-overrides';
+
+*,
+*:before,
+*:after {
+  outline: none !important;
+  box-sizing: border-box;
+  margin: 0;
+}
+
+*:not(i) {
+  font-family: $font-primary;
+}
+
+.page-container {
+  background-color: $color-background;
+  padding-top: 50px;
+}
+
+.page-content {
+  padding: 40px 7.5%;
+}
+
+.icon-fill-color-3 {
+  g {
+    fill: $color-3;
+  }
+}
