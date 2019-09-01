@@ -30,19 +30,18 @@
       <app-profile-button />
     </div>
 
-    <div
-      class="aside-panel"
-      :class="{
-        active: isAsidePanelActive
-      }"
+    <el-drawer
+      :visible.sync="isAsidePanelActive"
+      direction="ltr"
+      size="25%"
     >
-      <div class="logo-container">
+      <div class="aside-logo-container">
         <app-logo />
-        <div class="aside-panel-content">
-          <h2>Dreamixin</h2>
-        </div>
       </div>
-    </div>
+      <div class="aside-panel-content">
+        <h2>Dreamixin</h2>
+      </div>
+    </el-drawer>
   </div>
 </template>
 <script>
@@ -72,8 +71,6 @@ export default {
 </script>
 <style scoped lang="scss">
 @import '~/assets/scss/variables.scss';
-
-$aside-width: 300px;
 
 .app-navbar-container {
   position: fixed;
@@ -111,41 +108,9 @@ $aside-width: 300px;
         text-transform: uppercase;
         font-size: 16px;
 
-        &:hover {
+        &.nuxt-link-exact-active, &:hover {
           background-color: $color-2-hover;
         }
-      }
-    }
-  }
-
-  .aside-panel {
-    height: 100%;
-    position: fixed;
-    top: 50px;
-    left: -1 * $aside-width;
-    width: $aside-width;
-    background-color: $color-white;
-    border-right: 1px solid $color-border;
-    transition: left 0.2s;
-
-    &.active {
-      left: 0;
-    }
-
-    .logo-container {
-      width: 100%;
-      height: 100px;
-      margin-top: 40px;
-    }
-
-    .aside-panel-content {
-      padding: 0px 40px 40px 40px;
-
-      h2 {
-        color: $color-3;
-        font-size: 32px;
-        text-align: center;
-        font-family: $font-stylized;
       }
     }
   }

@@ -23,10 +23,41 @@
   align-items: center;
 }
 
+.is-align-flex-start {
+  align-items: flex-start;
+}
+
 .el-divider--horizontal {
   margin: 15px 0;
 }
 
 .el-autocomplete {
   width: 100%;
+}
+
+.el-upload-dragger {
+  flex-direction: column;
+
+  label {
+    color: $color-el-grey-light;
+    margin-top: 10px;
+  }
+
+  &:hover label {
+    color: $color-el-blue;
+  }
+}
+
+.el-button--micro.is-circle {
+  padding: 0;
+
+  i {
+    margin-top: 1px;
+    margin-left: 1px;
+  }
+}
+
+.el-drawer.ltr {
+  top: 50px;
+  height: calc(100% - 50px);
 }

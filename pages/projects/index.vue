@@ -1,11 +1,15 @@
 <template>
-  <div>
+  <div class="projects-container">
     <h1>
       Mes projets
     </h1>
 
-    <router-link tag="a" to="/projects/create">
-      Nouveau projet
+    <br>
+
+    <router-link to="/projects/create">
+      <el-button type="primary">
+        Nouveau projet
+      </el-button>
     </router-link>
   </div>
 </template>
@@ -15,5 +19,9 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
+.projects-container {
+  text-align: center;
+  margin-top: 150px;
+}
 </style>

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="home-container">
     <logo />
     <h1 class="title">
       dreamixin
@@ -19,3 +19,9 @@ export default {
   }
 };
 </script>
+<style scoped>
+.home-container {
+  text-align: center;
+  margin-top: 150px;
+}
+</style>

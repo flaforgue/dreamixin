@@ -2,13 +2,12 @@
   <div class="page-content">
     <el-card class="box-card">
       <div slot="header" class="clearfix">
-        <h3>Nouveau projet</h3>
+        <h3>Création d'un nouveau projet</h3>
       </div>
 
       <el-steps
         finish-status="success"
         :active="activeFormPart"
-        :align-center="true"
         :simple="true"
       >
         <el-step
@@ -20,7 +19,7 @@
           icon="el-icon-tickets"
         />
         <el-step
-          title="Partage"
+          title="Collaboration"
           icon="el-icon-share"
         />
       </el-steps>
@@ -62,7 +61,7 @@
               class="form-row"
             />
             <el-input
-              v-model="newProject.title"
+              v-model="newProject.subtitle"
               placeholder="Sous-titre du projet"
               class="form-row"
             />
@@ -70,7 +69,7 @@
               v-model="newProject.presentation"
               placeholder="Présentez votre projet"
               type="textarea"
-              :rows="4"
+              :rows="6"
             />
           </el-col>
           <el-col :span="12">
@@ -80,7 +79,7 @@
               action=""
               accept=".png,.jpg"
               :http-request="handleIllustrationUpload"
-              :drag="true"
+              drag
               :multiple="false"
               :show-file-list="false"
             >
@@ -89,16 +88,21 @@
                 :src="newProject.illustrationUrl"
                 class="illustration-preview"
               >
-              <i v-else class="el-icon-plus avatar-uploader-icon" />
+              <i v-else class="el-icon-picture avatar-uploader-icon" />
+              <label v-if="!newProject.illustrationUrl">
+                Illustration
+              </label>
             </el-upload>
           </el-col>
         </el-row>
       </form>
 
       <form v-if="activeFormPart === 2">
-        <el-row :gutter="20" type="flex" align="center">
+        <el-row :gutter="20" type="flex" align="flex-start">
           <el-col :span="3">
-            <p>Lecture</p>
+            <p class="form-row-title">
+              Lecture
+            </p>
           </el-col>
           <el-col :span="4">
             <el-switch
@@ -122,7 +126,19 @@
                 v-for="reader in readers"
                 :key="reader.id"
               >
-                {{ reader.value }}
+                <el-button
+                  type="danger"
+                  size="micro"
+                  icon="el-icon-close"
+                  circle
+                  @click="removeReader(reader)"
+                />
+                <span class="user-name">
+                  {{ reader.value }}
+                </span>
+              </li>
+              <li v-if="readers.length === 0">
+                Aucun utilisateur n'a accès au projet en lecture
               </li>
             </ul>
           </el-col>
@@ -130,9 +146,11 @@
 
         <el-divider />
 
-        <el-row :gutter="20" type="flex" align="center">
+        <el-row :gutter="20" type="flex" align="flex-start">
           <el-col :span="3">
-            <p>Review</p>
+            <p class="form-row-title">
+              Review
+            </p>
           </el-col>
           <el-col :span="4">
             <el-switch
@@ -156,7 +174,19 @@
                 v-for="reviewer in reviewers"
                 :key="reviewer.id"
               >
-                {{ reviewer.value }}
+                <el-button
+                  type="danger"
+                  size="mini"
+                  icon="el-icon-delete"
+                  circle
+                  @click="removeReviewer(reviewer)"
+                />
+                <span class="user-name">
+                  {{ reviewer.value }}
+                </span>
+              </li>
+              <li v-if="reviewers.length === 0">
+                Aucun utilisateur n'a accès au projet en review
               </li>
             </ul>
           </el-col>
@@ -295,7 +325,6 @@ export default {
     },
 
     selectCategory(categoryId) {
-      console.log(categoryId);
       this.newProject.categoryId = categoryId;
     },
 
@@ -332,6 +361,22 @@ export default {
       }
 
       this.reviewerQueryString = '';
+    },
+
+    removeReader(reader) {
+      const index = this.readers.indexOf(reader);
+
+      if (index > -1) {
+        this.readers.splice(index, 1);
+      }
+    },
+
+    removeReviewer(reviewer) {
+      const index = this.reviewers.indexOf(reviewer);
+
+      if (index > -1) {
+        this.reviewers.splice(index, 1);
+      }
     }
   }
 };
@@ -350,7 +395,7 @@ form {
 }
 
 .avatar-uploader {
-  height: 206px;
+  height: 248px;
   margin-bottom: 0;
 }
 
@@ -360,8 +405,18 @@ form {
 }
 
 .list-of-users {
+  list-style-type: none;
+  background-color: #F5F7FA;
+  border-radius: 4px;
+  padding: 6px 20px;
+
   li {
+    font-size: $font-size-text;
     margin: 5px 0;
+
+    .user-name {
+      margin-left: 5px;
+    }
   }
 }
 
@@ -373,6 +428,8 @@ form {
 .card-category {
   cursor: pointer;
   margin: 5px 0;
+  transform: scale(1);
+  transition: transform 0.2s;
 
   &:hover, &.active {
     .category-title {
@@ -385,11 +442,19 @@ form {
     }
   }
 
+  &.active {
+    transform: scale(1.05);
+  }
+
   .illustration-container {
     background-size: cover;
     background-repeat: no-repeat;
-    height: 300px;
+    height: 250px;
     width: 100%;
   }
+}
+
+.form-row-title {
+  margin-top: 10px;
 }
 </style>
