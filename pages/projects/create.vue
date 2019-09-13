@@ -5,200 +5,28 @@
         <h3>Création d'un nouveau projet</h3>
       </div>
 
-      <el-steps
-        finish-status="success"
-        :active="activeFormPart"
-        :simple="true"
-      >
-        <el-step
-          title="Univers"
-          icon="el-icon-picture-outline-round"
-        />
-        <el-step
-          title="Infos"
-          icon="el-icon-tickets"
-        />
-        <el-step
-          title="Collaboration"
-          icon="el-icon-share"
-        />
+      <el-steps finish-status="success" :active="activeFormPart" :simple="true">
+        <el-step title="Univers" icon="el-icon-picture-outline-round" />
+        <el-step title="Infos" icon="el-icon-tickets" />
+        <el-step title="Collaboration" icon="el-icon-share" />
       </el-steps>
 
       <form v-if="activeFormPart === 0">
-        <el-row :gutter="10">
-          <el-col
-            v-for="(category) in categoriesOptions"
-            :key="category.id"
-            :span="4"
-            :class="{
-              active: newProject.categoryId === category.id
-            }"
-            class="card-category"
-          >
-            <el-card :body-style="{ padding: '0px' }">
-              <div @click="selectCategory(category.id)">
-                <div
-                  class="illustration-container"
-                  :style="{
-                    backgroundImage: `url('${category.illustrationUrl}')`
-                  }"
-                />
-                <div style="padding: 14px;">
-                  <span class="category-title">{{ category.title }}</span>
-                </div>
-              </div>
-            </el-card>
-          </el-col>
-        </el-row>
+        <app-category-selector v-model="project.categoryId" :categories="categories" />
       </form>
 
       <form v-if="activeFormPart === 1">
-        <el-row :gutter="20" type="flex">
-          <el-col :span="12">
-            <el-input
-              v-model="newProject.title"
-              placeholder="Titre du projet"
-              class="form-row"
-            />
-            <el-input
-              v-model="newProject.subtitle"
-              placeholder="Sous-titre du projet"
-              class="form-row"
-            />
-            <el-input
-              v-model="newProject.presentation"
-              placeholder="Présentez votre projet"
-              type="textarea"
-              :rows="6"
-            />
-          </el-col>
-          <el-col :span="12">
-            <el-upload
-              class="avatar-uploader form-row"
-              name="illustration"
-              action=""
-              accept=".png,.jpg"
-              :http-request="handleIllustrationUpload"
-              drag
-              :multiple="false"
-              :show-file-list="false"
-            >
-              <img
-                v-if="newProject.illustrationUrl"
-                :src="newProject.illustrationUrl"
-                class="illustration-preview"
-              >
-              <i v-else class="el-icon-picture avatar-uploader-icon" />
-              <label v-if="!newProject.illustrationUrl">
-                Illustration
-              </label>
-            </el-upload>
-          </el-col>
-        </el-row>
+        <app-project-form-infos v-model="project" />
       </form>
 
       <form v-if="activeFormPart === 2">
-        <el-row :gutter="20" type="flex" align="flex-start">
-          <el-col :span="3">
-            <p class="form-row-title">
-              Lecture
-            </p>
-          </el-col>
-          <el-col :span="4">
-            <el-switch
-              v-model="newProject.isPublicRead"
-              active-text="Public"
-              inactive-text="Privé"
-              class="form-row"
-            />
-          </el-col>
-          <el-col v-if="!newProject.isPublicRead" :span="6">
-            <el-autocomplete
-              v-model="readerQueryString"
-              :fetch-suggestions="querySearchAsync"
-              placeholder="Entrez un nom d'utilisateur"
-              @select="addReader"
-            />
-          </el-col>
-          <el-col v-if="!newProject.isPublicRead" :span="11">
-            <ul class="list-of-users">
-              <li
-                v-for="reader in readers"
-                :key="reader.id"
-              >
-                <el-button
-                  type="danger"
-                  size="micro"
-                  icon="el-icon-close"
-                  circle
-                  @click="removeReader(reader)"
-                />
-                <span class="user-name">
-                  {{ reader.value }}
-                </span>
-              </li>
-              <li v-if="readers.length === 0">
-                Aucun utilisateur n'a accès au projet en lecture
-              </li>
-            </ul>
-          </el-col>
-        </el-row>
-
+        <app-project-form-sharing v-model="sharingReadOptions" title="Lecture" />
         <el-divider />
-
-        <el-row :gutter="20" type="flex" align="flex-start">
-          <el-col :span="3">
-            <p class="form-row-title">
-              Review
-            </p>
-          </el-col>
-          <el-col :span="4">
-            <el-switch
-              v-model="newProject.isPublicReview"
-              active-text="Public"
-              inactive-text="Privé"
-              class="form-row"
-            />
-          </el-col>
-          <el-col v-if="!newProject.isPublicReview" :span="6">
-            <el-autocomplete
-              v-model="reviewerQueryString"
-              :fetch-suggestions="querySearchAsync"
-              placeholder="Entrez un nom d'utilisateur"
-              @select="addReviewer"
-            />
-          </el-col>
-          <el-col v-if="!newProject.isPublicReview" :span="11">
-            <ul class="list-of-users">
-              <li
-                v-for="reviewer in reviewers"
-                :key="reviewer.id"
-              >
-                <el-button
-                  type="danger"
-                  size="mini"
-                  icon="el-icon-delete"
-                  circle
-                  @click="removeReviewer(reviewer)"
-                />
-                <span class="user-name">
-                  {{ reviewer.value }}
-                </span>
-              </li>
-              <li v-if="reviewers.length === 0">
-                Aucun utilisateur n'a accès au projet en review
-              </li>
-            </ul>
-          </el-col>
-        </el-row>
+        <app-project-form-sharing v-model="sharingReviewOptions" title="Review" />
       </form>
 
       <el-row class="form-row">
-        <el-button
-          plain
-          type="info"
-          @click="previous"
-        >
+        <el-button plain type="info" @click="previous">
           <template v-if="isFirstPanel">
             Annuler
           </template>
@@ -207,11 +35,7 @@
           </template>
         </el-button>
 
-        <el-button
-          plain
-          type="success"
-          @click="next"
-        >
+        <el-button plain type="success" @click="next">
           <template v-if="isLastPanel">
             Valider
           </template>
@@ -225,61 +49,74 @@
 </template>
 
 <script>
+import AppCategorySelector from '~/components/AppCategorySelector.vue';
+import AppProjectFormInfos from '~/components/AppProjectFormInfos.vue';
+import AppProjectFormSharing from '~/components/AppProjectFormSharing.vue';
+
 export default {
+  components: {
+    AppCategorySelector,
+    AppProjectFormInfos,
+    AppProjectFormSharing
+  },
+
   data() {
     return {
       nbFormparts: 3,
       activeFormPart: 0,
 
-      newProject: {
+      project: {
         title: '',
-        subTitle: '',
+        subtitle: '',
         isPublicRead: false,
         isPublicReview: false,
         presentation: '',
         categoryId: null,
         illustrationUrl: null
       },
-
-      readerQueryString: '',
-      readers: [],
-      reviewerQueryString: '',
-      reviewers: []
+      sharingReadOptions: {
+        isPublic: false,
+        users: []
+      },
+      sharingReviewOptions: {
+        isPublic: false,
+        users: []
+      }
     };
   },
 
   computed: {
-    categoriesOptions() {
+    categories() {
       return [
         {
           title: 'Heroic Fantasy',
-          illustrationUrl: 'http://cdn-uploads.gameblog.fr/images/blogs/50278/233724_med.jpg',
-          id: 0
+          illustrationUrl: '/images/categories/heroic-fantasy.jpeg',
+          id: '0'
         },
         {
           title: 'Science Fiction',
-          illustrationUrl: 'https://img.maxisciences.com/article/international/la-science-fiction-reflete-les-questionnements-de-notre-societe-selon-le-centre-d-analyse-strategique_b6ebe05eeb7b927891a77fe67d6cd4561d9dbc61.jpg',
-          id: 1
+          illustrationUrl: '/images/categories/sci-fi.jpeg',
+          id: '1'
         },
         {
           title: 'Steam Punk',
-          illustrationUrl: 'http://www.sclance.com/wallpapers/steampunk-wallpapers/steampunk-wallpapers_1671434.jpg',
-          id: 2
+          illustrationUrl: '/images/categories/steampunk.jpeg',
+          id: '2'
         },
         {
           title: 'Cyber Punk',
-          illustrationUrl: 'https://wallpaperaccess.com/full/675994.jpg',
-          id: 3
+          illustrationUrl: '/images/categories/cyberpunk.jpeg',
+          id: '3'
         },
         {
           title: 'Contemporain',
-          illustrationUrl: 'https://i.pinimg.com/originals/9a/f3/36/9af336625332313269206c7e37e18226.jpg',
-          id: 4
+          illustrationUrl: '/images/categories/contemporain.jpeg',
+          id: '4'
         },
         {
           title: 'Historique',
-          illustrationUrl: 'https://images.fineartamerica.com/images-medium/balmoral-castle-tower-sarah-e-ethridge.jpg',
-          id: 5
+          illustrationUrl: '/images/categories/historic.jpeg',
+          id: '5'
         }
       ];
     },
@@ -294,16 +131,6 @@ export default {
   },
 
   methods: {
-    handleIllustrationUpload(request) {
-      const reader = new FileReader();
-      const vueComponent = this;
-      reader.onload = function(e) {
-        vueComponent.newProject.illustrationUrl = e.target.result;
-      };
-
-      reader.readAsDataURL(request.file);
-    },
-
     next() {
       if (this.isLastPanel) {
         this.submit();
@@ -322,139 +149,14 @@ export default {
 
     submit() {
       this.$router.push('/projects');
-    },
-
-    selectCategory(categoryId) {
-      this.newProject.categoryId = categoryId;
-    },
-
-    querySearchAsync(queryString, cb) {
-      const options = [
-        {
-          value: 'Florian Laforgue',
-          id: 0
-        },
-        {
-          value: 'Claire Thiel',
-          id: 1
-        },
-        {
-          value: 'Edgar Lecoq',
-          id: 2
-        }
-      ];
-
-      cb(options.filter(element => element.value.includes(queryString)));
-    },
-
-    addReader(reader) {
-      if (!this.readers.find(item => item.id === reader.id)) {
-        this.readers.push(reader);
-      }
-
-      this.readerQueryString = '';
-    },
-
-    addReviewer(reviewer) {
-      if (!this.reviewers.find(item => item.id === reviewer.id)) {
-        this.reviewers.push(reviewer);
-      }
-
-      this.reviewerQueryString = '';
-    },
-
-    removeReader(reader) {
-      const index = this.readers.indexOf(reader);
-
-      if (index > -1) {
-        this.readers.splice(index, 1);
-      }
-    },
-
-    removeReviewer(reviewer) {
-      const index = this.reviewers.indexOf(reviewer);
-
-      if (index > -1) {
-        this.reviewers.splice(index, 1);
-      }
     }
   }
 };
 </script>
 
-<style scoped lang="scss">
-@import '~/assets/scss/variables.scss';
-
-.form-row {
-  margin-top: 10px;
-  margin-bottom: 10px;
-}
-
-form {
-  margin-top: 10px;
-}
-
-.avatar-uploader {
-  height: 248px;
-  margin-bottom: 0;
-}
-
-.illustration-preview {
-  max-height: 100%;
-  max-width: 100%;
-}
-
-.list-of-users {
-  list-style-type: none;
-  background-color: #F5F7FA;
-  border-radius: 4px;
-  padding: 6px 20px;
-
-  li {
-    font-size: $font-size-text;
-    margin: 5px 0;
-
-    .user-name {
-      margin-left: 5px;
-    }
-  }
-}
-
+<style scoped>
 form {
   margin-top: 20px;
   margin-bottom: 30px;
-}
-
-.card-category {
-  cursor: pointer;
-  margin: 5px 0;
-  transform: scale(1);
-  transition: transform 0.2s;
-
-  &:hover, &.active {
-    .category-title {
-      color: $color-1-light;
-    }
-
-    .el-card {
-      box-shadow: 0 2px 12px 0 rgba($color-1-light, 0.75);
-      border-color: $color-1-light;
-    }
-  }
-
-  &.active {
-    transform: scale(1.05);
-  }
-
-  .illustration-container {
-    background-size: cover;
-    background-repeat: no-repeat;
-    height: 250px;
-    width: 100%;
-  }
-}
-
-.form-row-title {
-  margin-top: 10px;
 }
 </style>

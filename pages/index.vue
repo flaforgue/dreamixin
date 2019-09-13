@@ -2,7 +2,7 @@
   <div class="home-container">
     <logo />
     <h1 class="title">
-      dreamixin
+      Dreamixin
     </h1>
     <h2 class="subtitle">
       Dreamixin project

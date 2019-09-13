@@ -13,6 +13,8 @@
 import AppNavBar from '~/components/AppNavBar.vue';
 
 export default {
+  middleware: 'auth',
+
   components: {
     AppNavBar
   },

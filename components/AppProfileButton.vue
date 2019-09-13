@@ -4,7 +4,11 @@
     @click="toggleProfileMenu()"
   >
     <el-dropdown trigger="click">
-      <el-avatar :size="30" icon="el-icon-user-solid" />
+      <el-avatar
+        :size="30"
+        icon="el-icon-user-solid"
+        :src="$store.state.user ? $store.state.user.avatarUrl : ''"
+      />
 
       <el-dropdown-menu slot="dropdown">
         <el-dropdown-item>
@@ -22,10 +26,10 @@
         </el-dropdown-item>
 
         <el-dropdown-item>
-          <router-link to="/logout">
+          <a class="" @click="logout">
             <i class="el-icon-switch-button" />
             Se déconnecter
-          </router-link>
+          </a>
         </el-dropdown-item>
       </el-dropdown-menu>
     </el-dropdown>
@@ -42,6 +46,14 @@ export default {
   methods: {
     toggleProfileMenu() {
       this.isProfileMenuActive = !this.isProfileMenuActive;
+    },
+
+    logout() {
+      this.$store.dispatch('logout');
+      // eslint-disable-next-line no-undef
+      gapi.auth2.getAuthInstance().signOut().then(() => {
+        this.$router.push('login');
+      });
     }
   }
 };
@@ -52,7 +64,9 @@ export default {
 .app-profile-button-container {
   width: 40px;
   margin-left: 20px;
+  text-align: right;
   cursor: pointer;
+  margin-top: 4px;
 }
 
 a {

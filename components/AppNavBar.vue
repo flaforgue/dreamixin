@@ -16,6 +16,11 @@
           </router-link>
         </li>
         <li class="nav-link">
+          <router-link tag="a" to="/collaborate">
+            Collaborer
+          </router-link>
+        </li>
+        <li class="nav-link">
           <router-link tag="a" to="/projects">
             Mes projets
           </router-link>
@@ -77,7 +82,7 @@ export default {
   z-index: 2;
   width: 100%;
   height: 50px;
-  padding: 0 60px;
+  padding: 0 7.5%;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -90,7 +95,7 @@ export default {
 
   .nav-links {
     padding-left: 0;
-    padding-top: 6px;
+    padding-top: 10px;
     list-style-type: none;
 
     .nav-link {

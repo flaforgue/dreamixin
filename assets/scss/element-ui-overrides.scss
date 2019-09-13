@@ -57,7 +57,17 @@
   }
 }
 
+.el-button {
+  i {
+    font-size: 120%;
+  }
+}
+
 .el-drawer.ltr {
   top: 50px;
   height: calc(100% - 50px);
+}
+
+.el-icon-sunny {
+  vertical-align: middle;
 }

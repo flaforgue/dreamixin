@@ -16,8 +16,9 @@
 }
 
 .page-container {
-  background-color: $color-background;
+  min-height: 100vh;
   padding-top: 50px;
+  background-color: $color-background;
 }
 
 .page-content {
@@ -44,4 +45,13 @@
     text-align: center;
     font-family: $font-stylized;
   }
+}
+
+.form-row {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.form-row-title {
+  margin-top: 10px;
 }
